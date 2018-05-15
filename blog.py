@@ -5,17 +5,10 @@ from flask import Flask, render_template, request, session, flash, redirect, \
     url_for, g
 import sqlite3
 
-# configuration (later found by Flask because written in UPPERCASE)
-DATABASE = 'blog.db'
-USERNAME = 'admin'
-PASSWORD = 'admin'
-SECRET_KEY = "4tS%qLWn"
-
-
 app = Flask(__name__)
 
-# pulls in app configuration by looking for UPPERCASE variables
-app.config.from_object(__name__)
+# configuration (later found by Flask because written in UPPERCASE)
+app.config.from_pyfile('settings.py')
 
 
 # function used for connecting to the database
@@ -26,18 +19,21 @@ def connect_db():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    """Return the loginpage to the client."""
+    """Return the login page to the client."""
     error = None
     status_code = 200
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME'] or \
-                request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid Credentials. Please try again.'
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username. Please try again.'
+            status_code = 401
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password. Please try again.'
             status_code = 401
         else:
             session['logged_in'] = True
             return redirect(url_for('main'))
-    return render_template('login.html')
+    print(error)
+    return render_template('login.html', error=error)
 
 
 @app.route('/logout')
