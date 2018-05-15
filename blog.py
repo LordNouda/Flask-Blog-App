@@ -40,6 +40,14 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/logout')
+def logout():
+    """Return the logout page to the client."""
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('login'))
+
+
 @app.route('/main')
 def main():
     """Return main page to the client."""
