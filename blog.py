@@ -45,7 +45,7 @@ def login():
             session['logged_in'] = True
             return redirect(url_for('main'))
     print(error)
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error), status_code
 
 
 @app.route('/logout')
@@ -65,7 +65,7 @@ def main():
     posts = [dict(title=row[0], post=row[1]) for row in cur.fetchall()]
     print(posts)
     g.db.close()
-    return render_template('main.html')
+    return render_template('main.html', posts=posts)
 
 
 if __name__ == '__main__':
