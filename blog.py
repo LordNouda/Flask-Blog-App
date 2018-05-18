@@ -63,7 +63,6 @@ def main():
     g.db = connect_db()
     cur = g.db.execute('SELECT * FROM posts')
     posts = [dict(title=row[0], post=row[1]) for row in cur.fetchall()]
-    print(posts)
     g.db.close()
     return render_template('main.html', posts=posts)
 
